@@ -9,12 +9,17 @@ namespace ImageProcessor
     using System.Collections.Generic;
     using System.IO;
 
+    using ImageProcessor.Colors;
     using ImageProcessor.Formats;
 
     /// <summary>
     /// Encapsulates an image, which consists of the pixel data for a graphics image and its attributes.
     /// </summary>
-    public interface IImage : IImageBase
+    /// <typeparam name="T">
+    /// The object representing the type to store the image pixel color components.
+    /// </typeparam>
+    public interface IImage<T> : IImageBase<T>
+        where T : struct
     {
         /// <summary>
         /// Gets or sets the resolution of the image in x- direction. It is defined as

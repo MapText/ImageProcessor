@@ -7,10 +7,16 @@ namespace ImageProcessor
 {
     using System;
 
+    using ImageProcessor.Colors;
+
     /// <summary>
     /// Encapsulates the basic properties and methods required to manipulate images.
     /// </summary>
-    public interface IImageBase
+    /// <typeparam name="T">
+    /// The object representing the type to store the image pixel color components.
+    /// </typeparam>
+    public interface IImageBase<T>
+        where T : struct
     {
         /// <summary>
         /// Gets the image pixels as byte array.
@@ -20,7 +26,7 @@ namespace ImageProcessor
         /// and stores the blue, the green, the red and the alpha value for
         /// each pixel in this order.
         /// </remarks>
-        float[] Pixels { get; }
+        T[] Pixels { get; }
 
         /// <summary>
         /// Gets the width in pixels.
@@ -43,7 +49,7 @@ namespace ImageProcessor
         Rectangle Bounds { get; }
 
         /// <summary>
-        /// Gets or sets th quality of the image. This affects the output quality of lossy image formats.
+        /// Gets or sets the quality of the image. This affects the output quality of lossy image formats.
         /// </summary>
         int Quality { get; set; }
 
@@ -67,7 +73,7 @@ namespace ImageProcessor
         /// than zero and smaller than the width of the pixel.
         /// </param>
         /// <returns>The <see cref="Color"/> at the specified position.</returns>
-        Color this[int x, int y] { get; set; }
+        T[] this[int x, int y] { get; set; }
 
         /// <summary>
         /// Sets the pixel array of the image to the given value.
@@ -83,7 +89,7 @@ namespace ImageProcessor
         /// <exception cref="ArgumentException">
         /// Thrown if the <paramref name="pixels"/> length is not equal to Width * Height * 4.
         /// </exception>
-        void SetPixels(int width, int height, float[] pixels);
+        void SetPixels(int width, int height, T[] pixels);
 
         /// <summary>
         /// Sets the pixel array of the image to the given value, creating a copy of 
@@ -100,6 +106,6 @@ namespace ImageProcessor
         /// <exception cref="ArgumentException">
         /// Thrown if the <paramref name="pixels"/> length is not equal to Width * Height * 4.
         /// </exception>
-        void ClonePixels(int width, int height, float[] pixels);
+        void ClonePixels(int width, int height, T[] pixels);
     }
 }

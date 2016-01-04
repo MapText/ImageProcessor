@@ -7,21 +7,24 @@ namespace ImageProcessor
 {
     using System;
 
+    using ImageProcessor.Colors;
+
     /// <summary>
     /// The base class of all images. Encapsulates the basic properties and methods
     /// required to manipulate images.
     /// </summary>
-    public abstract class ImageBase : IImageBase
+    public abstract class ImageBase<T> : IImageBase<T>
+        where T : struct
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ImageBase"/> class.
+        /// Initializes a new instance of the <see cref="ImageBase{T}"/> class.
         /// </summary>
         protected ImageBase()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ImageBase"/> class.
+        /// Initializes a new instance of the <see cref="ImageBase{T}"/> class.
         /// </summary>
         /// <param name="width">
         /// The width of the image in pixels.
@@ -40,29 +43,29 @@ namespace ImageProcessor
             this.Width = width;
             this.Height = height;
 
-            this.Pixels = new float[width * height * 4];
+            this.Pixels = new T[width * height * 4];
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ImageBase"/> class.
+        /// Initializes a new instance of the <see cref="ImageBase{T}"/> class.
         /// </summary>
         /// <param name="other">
-        /// The other <see cref="ImageBase"/> to create this instance from.
+        /// The other <see cref="ImageBase{T}"/> to create this instance from.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// Thrown if the given <see cref="ImageBase"/> is null.
+        /// Thrown if the given <see cref="ImageBase{T}"/> is null.
         /// </exception>
-        protected ImageBase(ImageBase other)
+        protected ImageBase(ImageBase<T> other)
         {
             Guard.NotNull(other, nameof(other), "Other image cannot be null.");
 
-            float[] pixels = other.Pixels;
+            T[] pixels = other.Pixels;
 
             this.Width = other.Width;
             this.Height = other.Height;
             this.Quality = other.Quality;
             this.FrameDelay = other.FrameDelay;
-            this.Pixels = new float[pixels.Length];
+            this.Pixels = new T[pixels.Length];
             Array.Copy(pixels, this.Pixels, pixels.Length);
         }
 
@@ -84,7 +87,7 @@ namespace ImageProcessor
         /// and stores the blue, the green, the red and the alpha value for
         /// each pixel in this order.
         /// </remarks>
-        public float[] Pixels { get; private set; }
+        public T[] Pixels { get; private set; }
 
         /// <summary>
         /// Gets the width in pixels.
@@ -118,7 +121,7 @@ namespace ImageProcessor
         public int FrameDelay { get; set; }
 
         /// <inheritdoc/>
-        public Color this[int x, int y]
+        public T[] this[int x, int y]
         {
             get
             {
@@ -135,7 +138,8 @@ namespace ImageProcessor
 #endif
 
                 int start = ((y * this.Width) + x) * 4;
-                return new Color(this.Pixels[start], this.Pixels[start + 1], this.Pixels[start + 2], this.Pixels[start + 3]);
+                return new IColor<T>().FromArray(this.Pixels);
+                //return new Color(this.Pixels[start], this.Pixels[start + 1], this.Pixels[start + 2], this.Pixels[start + 3]);
             }
 
             set
@@ -161,7 +165,7 @@ namespace ImageProcessor
         }
 
         /// <inheritdoc/>
-        public void SetPixels(int width, int height, float[] pixels)
+        public void SetPixels(int width, int height, T[] pixels)
         {
 #if DEBUG
             if (width <= 0)
@@ -185,7 +189,7 @@ namespace ImageProcessor
         }
 
         /// <inheritdoc/>
-        public void ClonePixels(int width, int height, float[] pixels)
+        public void ClonePixels(int width, int height, T[] pixels)
         {
 #if DEBUG
             if (width <= 0)
@@ -205,7 +209,7 @@ namespace ImageProcessor
 #endif
             this.Width = width;
             this.Height = height;
-            float[] clonedPixels = new float[pixels.Length];
+            T[] clonedPixels = new T[pixels.Length];
             Array.Copy(pixels, clonedPixels, pixels.Length);
             this.Pixels = clonedPixels;
         }
