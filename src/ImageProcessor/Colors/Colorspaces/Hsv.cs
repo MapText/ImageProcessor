@@ -67,57 +67,6 @@ namespace ImageProcessor
         public bool IsEmpty => this.backingVector.Equals(default(Vector3));
 
         /// <summary>
-        /// Allows the implicit conversion of an instance of <see cref="Color"/> to a
-        /// <see cref="Hsv"/>.
-        /// </summary>
-        /// <param name="color">The instance of <see cref="Color"/> to convert.</param>
-        /// <returns>
-        /// An instance of <see cref="Hsv"/>.
-        /// </returns>
-        public static implicit operator Hsv(Color color)
-        {
-            color = Color.ToNonPremultiplied(color.Limited);
-            float r = color.R;
-            float g = color.G;
-            float b = color.B;
-
-            float max = Math.Max(r, Math.Max(g, b));
-            float min = Math.Min(r, Math.Min(g, b));
-            float chroma = max - min;
-            float h = 0;
-            float s = 0;
-            float v = max;
-
-            if (Math.Abs(chroma) < Epsilon)
-            {
-                return new Hsv(0, s, v);
-            }
-
-            if (Math.Abs(r - max) < Epsilon)
-            {
-                h = (g - b) / chroma;
-            }
-            else if (Math.Abs(g - max) < Epsilon)
-            {
-                h = 2 + ((b - r) / chroma);
-            }
-            else if (Math.Abs(b - max) < Epsilon)
-            {
-                h = 4 + ((r - g) / chroma);
-            }
-
-            h *= 60;
-            if (h < 0.0)
-            {
-                h += 360;
-            }
-
-            s = chroma / v;
-
-            return new Hsv(h, s, v);
-        }
-
-        /// <summary>
         /// Compares two <see cref="Hsv"/> objects for equality.
         /// </summary>
         /// <param name="left">

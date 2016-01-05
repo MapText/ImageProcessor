@@ -65,30 +65,6 @@ namespace ImageProcessor
         public bool IsEmpty => this.backingVector.Equals(default(Vector3));
 
         /// <summary>
-        /// Allows the implicit conversion of an instance of <see cref="Color"/> to a
-        /// <see cref="YCbCr"/>.
-        /// </summary>
-        /// <param name="color">
-        /// The instance of <see cref="Color"/> to convert.
-        /// </param>
-        /// <returns>
-        /// An instance of <see cref="YCbCr"/>.
-        /// </returns>
-        public static implicit operator YCbCr(Color color)
-        {
-            color = Color.ToNonPremultiplied(color.Limited);
-            float r = color.R * 255f;
-            float g = color.G * 255f;
-            float b = color.B * 255f;
-
-            float y = (float)((0.299 * r) + (0.587 * g) + (0.114 * b));
-            float cb = 128 + (float)((-0.168736 * r) - (0.331264 * g) + (0.5 * b));
-            float cr = 128 + (float)((0.5 * r) - (0.418688 * g) - (0.081312 * b));
-
-            return new YCbCr(y, cb, cr);
-        }
-
-        /// <summary>
         /// Compares two <see cref="YCbCr"/> objects for equality.
         /// </summary>
         /// <param name="left">

@@ -76,38 +76,6 @@ namespace ImageProcessor
         public bool IsEmpty => this.backingVector.Equals(default(Vector4));
 
         /// <summary>
-        /// Allows the implicit conversion of an instance of <see cref="Color"/> to a
-        /// <see cref="Cmyk"/>.
-        /// </summary>
-        /// <param name="color">
-        /// The instance of <see cref="Bgra32"/> to convert.
-        /// </param>
-        /// <returns>
-        /// An instance of <see cref="Cmyk"/>.
-        /// </returns>
-        public static implicit operator Cmyk(Color color)
-        {
-            color = color.Limited;
-
-            float c = 1f - color.R;
-            float m = 1f - color.G;
-            float y = 1f - color.B;
-
-            float k = Math.Min(c, Math.Min(m, y));
-
-            if (Math.Abs(k - 1.0f) <= Epsilon)
-            {
-                return new Cmyk(0, 0, 0, 1);
-            }
-
-            c = (c - k) / (1 - k);
-            m = (m - k) / (1 - k);
-            y = (y - k) / (1 - k);
-
-            return new Cmyk(c, m, y, k);
-        }
-
-        /// <summary>
         /// Compares two <see cref="Cmyk"/> objects for equality.
         /// </summary>
         /// <param name="left">

@@ -34,6 +34,38 @@ namespace ImageProcessor
         }
 
         /// <summary>
+        /// Allows the implicit conversion of an instance of <see cref="Color"/> to a
+        /// <see cref="Cmyk"/>.
+        /// </summary>
+        /// <param name="color">
+        /// The instance of <see cref="Bgra32"/> to convert.
+        /// </param>
+        /// <returns>
+        /// An instance of <see cref="Cmyk"/>.
+        /// </returns>
+        public static implicit operator Cmyk(Color<T> color)
+        {
+            Color<float> colorf = Color<float>.Cast(ToNonPremultiplied(color.Limited));
+
+            float c = (255f - colorf.R) / 255f;
+            float m = (255f - colorf.G) / 255f;
+            float y = (255f - colorf.B) / 255f;
+
+            float k = Math.Min(c, Math.Min(m, y));
+
+            if (Math.Abs(k - 1.0f) <= Epsilon)
+            {
+                return new Cmyk(0, 0, 0, 1);
+            }
+
+            c = (c - k) / (1 - k);
+            m = (m - k) / (1 - k);
+            y = (y - k) / (1 - k);
+
+            return new Cmyk(c, m, y, k);
+        }
+
+        /// <summary>
         /// Allows the implicit conversion of an instance of <see cref="YCbCr"/> to a
         /// <see cref="Color{T}"/>.
         /// </summary>
@@ -52,6 +84,30 @@ namespace ImageProcessor
             T b = (T)(object)(y + (1.772 * cb));
 
             return new Color<T>(r, g, b);
+        }
+
+        /// <summary>
+        /// Allows the implicit conversion of an instance of <see cref="Color"/> to a
+        /// <see cref="YCbCr"/>.
+        /// </summary>
+        /// <param name="color">
+        /// The instance of <see cref="Color"/> to convert.
+        /// </param>
+        /// <returns>
+        /// An instance of <see cref="YCbCr"/>.
+        /// </returns>
+        public static implicit operator YCbCr(Color<T> color)
+        {
+            Color<float> colorf = Color<float>.Cast(ToNonPremultiplied(color.Limited));
+            float r = colorf.R;
+            float g = colorf.G;
+            float b = colorf.B;
+
+            float y = (float)((0.299 * r) + (0.587 * g) + (0.114 * b));
+            float cb = 128 + (float)((-0.168736 * r) - (0.331264 * g) + (0.5 * b));
+            float cr = 128 + (float)((0.5 * r) - (0.418688 * g) - (0.081312 * b));
+
+            return new YCbCr(y, cb, cr);
         }
 
         /// <summary>
@@ -128,12 +184,63 @@ namespace ImageProcessor
         }
 
         /// <summary>
+        /// Allows the implicit conversion of an instance of <see cref="Color{T}"/> to a
+        /// <see cref="Hsv"/>.
+        /// </summary>
+        /// <param name="color">The instance of <see cref="Color"/> to convert.</param>
+        /// <returns>
+        /// An instance of <see cref="Hsv"/>.
+        /// </returns>
+        public static implicit operator Hsv(Color<T> color)
+        {
+            Color<float> colorf = Color<float>.Cast(ToNonPremultiplied(color.Limited));
+            float r = colorf.R / 255f;
+            float g = colorf.G / 255f;
+            float b = colorf.B / 255f;
+
+            float max = Math.Max(r, Math.Max(g, b));
+            float min = Math.Min(r, Math.Min(g, b));
+            float chroma = max - min;
+            float h = 0;
+            float s = 0;
+            float v = max;
+
+            if (Math.Abs(chroma) < Epsilon)
+            {
+                return new Hsv(0, s, v);
+            }
+
+            if (Math.Abs(r - max) < Epsilon)
+            {
+                h = (g - b) / chroma;
+            }
+            else if (Math.Abs(g - max) < Epsilon)
+            {
+                h = 2 + ((b - r) / chroma);
+            }
+            else if (Math.Abs(b - max) < Epsilon)
+            {
+                h = 4 + ((r - g) / chroma);
+            }
+
+            h *= 60;
+            if (h < 0.0)
+            {
+                h += 360;
+            }
+
+            s = chroma / v;
+
+            return new Hsv(h, s, v);
+        }
+
+        /// <summary>
         /// Allows the implicit conversion of an instance of <see cref="Hsl"/> to a
         /// <see cref="Color"/>.
         /// </summary>
         /// <param name="color">The instance of <see cref="Hsl"/> to convert.</param>
         /// <returns>
-        /// An instance of <see cref="Color"/>.
+        /// An instance of <see cref="Color{T}"/>.
         /// </returns>
         public static implicit operator Color<T>(Hsl color)
         {
@@ -165,6 +272,64 @@ namespace ImageProcessor
             T tg = (T)(object)(g * 255f);
             T tb = (T)(object)(b * 255f);
             return new Color<T>(tr, tg, tb);
+        }
+
+        /// <summary>
+        /// Allows the implicit conversion of an instance of <see cref="Color{T}"/> to a
+        /// <see cref="Hsl"/>.
+        /// </summary>
+        /// <param name="color">The instance of <see cref="Color"/> to convert.</param>
+        /// <returns>
+        /// An instance of <see cref="Hsl"/>.
+        /// </returns>
+        public static implicit operator Hsl(Color<T> color)
+        {
+            Color<float> colorf = Color<float>.Cast(ToNonPremultiplied(color.Limited));
+            float r = colorf.R / 255f;
+            float g = colorf.G / 255f;
+            float b = colorf.B / 255f;
+
+            float max = Math.Max(r, Math.Max(g, b));
+            float min = Math.Min(r, Math.Min(g, b));
+            float chroma = max - min;
+            float h = 0;
+            float s = 0;
+            float l = (max + min) / 2;
+
+            if (Math.Abs(chroma) < Epsilon)
+            {
+                return new Hsl(0, s, l);
+            }
+
+            if (Math.Abs(r - max) < Epsilon)
+            {
+                h = (g - b) / chroma;
+            }
+            else if (Math.Abs(g - max) < Epsilon)
+            {
+                h = 2 + ((b - r) / chroma);
+            }
+            else if (Math.Abs(b - max) < Epsilon)
+            {
+                h = 4 + ((r - g) / chroma);
+            }
+
+            h *= 60;
+            if (h < 0.0)
+            {
+                h += 360;
+            }
+
+            if (l <= .5f)
+            {
+                s = chroma / (max + min);
+            }
+            else
+            {
+                s = chroma / (2 - chroma);
+            }
+
+            return new Hsl(h, s, l);
         }
 
         /// <summary>

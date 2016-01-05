@@ -67,63 +67,6 @@ namespace ImageProcessor
         public bool IsEmpty => this.backingVector.Equals(default(Vector3));
 
         /// <summary>
-        /// Allows the implicit conversion of an instance of <see cref="Color"/> to a
-        /// <see cref="Hsl"/>.
-        /// </summary>
-        /// <param name="color">The instance of <see cref="Color"/> to convert.</param>
-        /// <returns>
-        /// An instance of <see cref="Hsl"/>.
-        /// </returns>
-        public static implicit operator Hsl(Color color)
-        {
-            color = Color.ToNonPremultiplied(color.Limited);
-            float r = color.R;
-            float g = color.G;
-            float b = color.B;
-
-            float max = Math.Max(r, Math.Max(g, b));
-            float min = Math.Min(r, Math.Min(g, b));
-            float chroma = max - min;
-            float h = 0;
-            float s = 0;
-            float l = (max + min) / 2;
-
-            if (Math.Abs(chroma) < Epsilon)
-            {
-                return new Hsl(0, s, l);
-            }
-
-            if (Math.Abs(r - max) < Epsilon)
-            {
-                h = (g - b) / chroma;
-            }
-            else if (Math.Abs(g - max) < Epsilon)
-            {
-                h = 2 + ((b - r) / chroma);
-            }
-            else if (Math.Abs(b - max) < Epsilon)
-            {
-                h = 4 + ((r - g) / chroma);
-            }
-
-            h *= 60;
-            if (h < 0.0)
-            {
-                h += 360;
-            }
-
-            if (l <= .5f)
-            {
-                s = chroma / (max + min);
-            }
-            else {
-                s = chroma / (2 - chroma);
-            }
-
-            return new Hsl(h, s, l);
-        }
-
-        /// <summary>
         /// Compares two <see cref="Hsl"/> objects for equality.
         /// </summary>
         /// <param name="left">
