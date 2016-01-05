@@ -11,7 +11,11 @@ namespace ImageProcessor.Colors
     using System.Numerics;
     using System.Runtime.CompilerServices;
 
-    public struct Color<T> : IColor<T>, IEquatable<Color<T>>
+    /// <summary>
+    /// Represents a four-component color using red, green, blue, and alpha data. 
+    /// Each component is stored in premultiplied format multiplied by the alpha component.
+    /// </summary>
+    public partial struct Color<T> : IColor<T>, IEquatable<Color<T>>
         where T : struct, IComparable<T>, IFormattable
     {
         /// <summary>
@@ -40,9 +44,7 @@ namespace ImageProcessor.Colors
         /// <summary>
         /// Initializes a new instance of the <see cref="Color{T}"/> struct.
         /// </summary>
-        /// <param name="vector">
-        /// The vector.
-        /// </param>
+        /// <param name="vector">The vector.</param>
         public Color(Vector<T> vector)
             : this()
         {
