@@ -6,11 +6,13 @@
 namespace ImageProcessor.Colors
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Numerics;
     using System.Runtime.CompilerServices;
 
     public struct Color<T> : IColor<T>, IEquatable<Color<T>>
-        where T : struct, IComparable<T>
+        where T : struct, IComparable<T>, IFormattable
     {
         /// <summary>
         /// Represents an empty <see cref="Color"/> that has R, G, B, and A values set to zero.
@@ -18,9 +20,9 @@ namespace ImageProcessor.Colors
         public static readonly Color<T> Empty = default(Color<T>);
 
         /// <summary>
-        /// The epsilon for comparing floating point numbers.
+        /// The backing vector for SIMD support.
         /// </summary>
-        private const float Epsilon = 0.0001f;
+        private Vector<T> backingVector;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Color{T}"/> struct.
@@ -32,14 +34,23 @@ namespace ImageProcessor.Colors
         public Color(T r, T g, T b, T a)
             : this()
         {
-            this.R = r;
-            this.G = g;
-            this.B = b;
-            this.A = a;
+            this.backingVector = new Vector<T>(new[] { r, g, b, a });
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Color"/> struct.
+        /// Initializes a new instance of the <see cref="Color{T}"/> struct.
+        /// </summary>
+        /// <param name="vector">
+        /// The vector.
+        /// </param>
+        public Color(Vector<T> vector)
+            : this()
+        {
+            this.backingVector = vector;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Color{T}"/> struct.
         /// </summary>
         /// <param name="hex">
         /// The hexadecimal representation of the combined color components arranged
@@ -48,6 +59,11 @@ namespace ImageProcessor.Colors
         public Color(string hex)
             : this()
         {
+            T r;
+            T g;
+            T b;
+            T a;
+
             // Hexadecimal representations are layed out AARRGGBB to we need to do some reordering.
             hex = hex.StartsWith("#") ? hex.Substring(1) : hex;
 
@@ -58,17 +74,17 @@ namespace ImageProcessor.Colors
 
             if (hex.Length == 8)
             {
-                this.R = (T)(object)Convert.ToByte(hex.Substring(2, 2), 16);
-                this.G = (T)(object)Convert.ToByte(hex.Substring(4, 2), 16);
-                this.B = (T)(object)Convert.ToByte(hex.Substring(6, 2), 16);
-                this.A = (T)(object)Convert.ToByte(hex.Substring(0, 2), 16);
+                r = (T)(object)Convert.ToByte(hex.Substring(2, 2), 16);
+                g = (T)(object)Convert.ToByte(hex.Substring(4, 2), 16);
+                b = (T)(object)Convert.ToByte(hex.Substring(6, 2), 16);
+                a = (T)(object)Convert.ToByte(hex.Substring(0, 2), 16);
             }
             else if (hex.Length == 6)
             {
-                this.R = (T)(object)Convert.ToByte(hex.Substring(0, 2), 16);
-                this.G = (T)(object)Convert.ToByte(hex.Substring(2, 2), 16);
-                this.B = (T)(object)Convert.ToByte(hex.Substring(4, 2), 16);
-                this.A = (T)(object)255;
+                r = (T)(object)Convert.ToByte(hex.Substring(0, 2), 16);
+                g = (T)(object)Convert.ToByte(hex.Substring(2, 2), 16);
+                b = (T)(object)Convert.ToByte(hex.Substring(4, 2), 16);
+                a = (T)(object)255;
             }
             else
             {
@@ -76,32 +92,50 @@ namespace ImageProcessor.Colors
                 string gh = char.ToString(hex[1]);
                 string bh = char.ToString(hex[2]);
 
-                this.B = (T)(object)Convert.ToByte(bh + bh, 16);
-                this.G = (T)(object)Convert.ToByte(gh + gh, 16);
-                this.R = (T)(object)Convert.ToByte(rh + rh, 16);
-                this.A = (T)(object)255;
+                r = (T)(object)Convert.ToByte(rh + rh, 16);
+                g = (T)(object)Convert.ToByte(gh + gh, 16);
+                b = (T)(object)Convert.ToByte(bh + bh, 16);
+                a = (T)(object)255;
             }
+
+            this.backingVector = new Vector<T>(new[] { r, g, b, a });
         }
 
         /// <inheritdoc/>
-        public T R { get; set; }
-
-        /// <summary>
-        /// Gets or sets the green component of the color.
-        /// </summary>
-        public T G { get; set; }
+        public T R => this.backingVector[0];
 
         /// <inheritdoc/>
-        public T B { get; set; }
+        public T G => this.backingVector[1];
 
         /// <inheritdoc/>
-        public T A { get; set; }
+        public T B => this.backingVector[2];
+
+        /// <inheritdoc/>
+        public T A => this.backingVector[3];
 
         /// <summary>
         /// Gets a value indicating whether this <see cref="Color"/> is empty.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public bool IsEmpty => this.Equals(Empty);
+        public bool IsEmpty => this.backingVector.Equals(default(Vector<T>));
+
+        /// <summary>
+        /// Gets this color with the component values clamped from 0 to 255.
+        /// </summary>
+        public Color<T> Limited
+        {
+            get
+            {
+                T min = (T)(object)0;
+                T max = (T)(object)255;
+                T r = this.R.Clamp(min, max);
+                T g = this.G.Clamp(min, max);
+                T b = this.B.Clamp(min, max);
+                T a = this.A.Clamp(min, max);
+
+                return new Color<T>(r, g, b, a);
+            }
+        }
 
         /// <summary>
         /// Computes the sum of adding two colors.
@@ -113,13 +147,7 @@ namespace ImageProcessor.Colors
         /// </returns>
         public static Color<T> operator +(Color<T> left, Color<T> right)
         {
-            // TODO: SIMD?
-            T r = ScalarAdd(left.R, right.R);
-            T g = ScalarAdd(left.G, right.G);
-            T b = ScalarAdd(left.B, right.B);
-            T a = ScalarAdd(left.A, right.A);
-
-            return new Color<T>(r, g, b, a);
+            return new Color<T>(left.backingVector + right.backingVector);
         }
 
         /// <summary>
@@ -132,13 +160,7 @@ namespace ImageProcessor.Colors
         /// </returns>
         public static Color<T> operator -(Color<T> left, Color<T> right)
         {
-            // TODO: SIMD?
-            T r = ScalarSubtract(left.R, right.R);
-            T g = ScalarSubtract(left.G, right.G);
-            T b = ScalarSubtract(left.B, right.B);
-            T a = ScalarSubtract(left.A, right.A);
-
-            return new Color<T>(r, g, b, a);
+            return new Color<T>(left.backingVector - right.backingVector);
         }
 
         /// <summary>
@@ -151,7 +173,7 @@ namespace ImageProcessor.Colors
         /// </returns>
         public static Color<T> operator *(Color<T> color, T factor)
         {
-            return new Color<T>(factor, factor, factor, factor) * color;
+            return new Color<T>(color.backingVector * factor);
         }
 
         /// <summary>
@@ -164,7 +186,7 @@ namespace ImageProcessor.Colors
         /// </returns>
         public static Color<T> operator *(T factor, Color<T> color)
         {
-            return new Color<T>(factor, factor, factor, factor) * color;
+            return new Color<T>(color.backingVector * factor);
         }
 
         /// <summary>
@@ -177,13 +199,7 @@ namespace ImageProcessor.Colors
         /// </returns>
         public static Color<T> operator *(Color<T> left, Color<T> right)
         {
-            // TODO: SIMD?
-            T r = ScalarMultiply(left.R, right.R);
-            T g = ScalarMultiply(left.G, right.G);
-            T b = ScalarMultiply(left.B, right.B);
-            T a = ScalarMultiply(left.A, right.A);
-
-            return new Color<T>(r, g, b, a);
+            return new Color<T>(left.backingVector * right.backingVector);
         }
 
         /// <summary>
@@ -226,13 +242,7 @@ namespace ImageProcessor.Colors
         /// </returns>
         public static Color<T> Average(Color<T> first, Color<T> second)
         {
-            // TODO: SIMD?
-            T r = ScalarAverage(first.R, second.R);
-            T g = ScalarAverage(first.G, second.G);
-            T b = ScalarAverage(first.B, second.B);
-            T a = ScalarAverage(first.A, second.A);
-
-            return new Color<T>(r, g, b, a);
+            return new Color<T>(first.backingVector * second.backingVector / new Vector<T>((T)(object)2));
         }
 
         /// <summary>
@@ -243,10 +253,11 @@ namespace ImageProcessor.Colors
         /// <returns>The <see cref="Color"/>.</returns>
         public static Color<T> FromNonPremultiplied(Color<T> color)
         {
-            // TODO: SIMD?
-            T r = ScalarMultiply(color.R, color.A);
-            T g = ScalarMultiply(color.G, color.A);
-            T b = ScalarMultiply(color.B, color.A);
+            Vector<T> multiplied = color.backingVector * new Vector<T>(color.A);
+
+            T r = multiplied[0];
+            T g = multiplied[1];
+            T b = multiplied[2];
 
             return new Color<T>(r, g, b, color.A);
         }
@@ -259,26 +270,16 @@ namespace ImageProcessor.Colors
         /// <returns>The <see cref="Color"/>.</returns>
         public static Color<T> ToNonPremultiplied(Color<T> color)
         {
-            if (typeof(T) == typeof(byte))
+            if (EqualityComparer<T>.Default.Equals(color.A, default(T)))
             {
-                if ((byte)(object)color.A == 0)
-                {
-                    return new Color<T>(color.R, color.G, color.B, color.A);
-                }
+                return new Color<T>(color.backingVector);
             }
 
-            if (typeof(T) == typeof(float))
-            {
-                if (Math.Abs((float)(object)color.A) < Epsilon)
-                {
-                    return new Color<T>(color.R, color.G, color.B, color.A);
-                }
-            }
+            Vector<T> divided = color.backingVector / new Vector<T>(color.A);
 
-            // TODO: SIMD?
-            T r = ScalarDivide(color.R, color.A);
-            T g = ScalarDivide(color.G, color.A);
-            T b = ScalarDivide(color.B, color.A);
+            T r = divided[0];
+            T g = divided[1];
+            T b = divided[2];
 
             return new Color<T>(r, g, b, color.A);
         }
@@ -362,187 +363,13 @@ namespace ImageProcessor.Colors
                 return "Color [ Empty ]";
             }
 
-            if (typeof(T) == typeof(byte))
-            {
-                return $"Color [ R={(byte)(object)this.R}, G={(byte)(object)this.G}, B={(byte)(object)this.B}, A={(byte)(object)this.A} ]";
-            }
-
-            if (typeof(T) == typeof(float))
-            {
-                return $"Color [ R={(float)(object)this.R:#0.##}, G={(float)(object)this.G:#0.##}, B={(float)(object)this.B:#0.##}, A={(float)(object)this.A:#0.##} ]";
-            }
-
-            throw new NotSupportedException("Specified type is not supported");
+            return $"Color [ R={this.R:#0.##}, G={this.G:#0.##}, B={this.B:#0.##}, A={this.A:#0.##} ]";
         }
 
         /// <inheritdoc/>
         public bool Equals(Color<T> other)
         {
-            // TODO: SIMD?
-            return ScalarEquals(this.R, other.R)
-                && ScalarEquals(this.G, other.G)
-                && ScalarEquals(this.B, other.B)
-                && ScalarEquals(this.A, other.A);
-        }
-
-        /// <summary>
-        /// Computes the sum of adding two scalar values.
-        /// </summary>
-        /// <param name="left">The scalar on the left side of the operand.</param>
-        /// <param name="right">The scalar on the right side of the operand.</param>
-        /// <returns>The <see cref="T"/>.</returns>
-        /// <exception cref="NotSupportedException">
-        /// Thrown if the given type parameter is not supported.
-        /// </exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static T ScalarAdd(T left, T right)
-        {
-            unchecked
-            {
-                if (typeof(T) == typeof(byte))
-                {
-                    return (T)(object)(byte)((byte)(object)left + (byte)(object)right);
-                }
-
-                if (typeof(T) == typeof(float))
-                {
-                    return (T)(object)((float)(object)left + (float)(object)right);
-                }
-
-                throw new NotSupportedException("Specified type is not supported");
-            }
-        }
-
-        /// <summary>
-        /// Computes the difference left by subtracting one scalar value from another.
-        /// </summary>
-        /// <param name="left">The scalar on the left side of the operand.</param>
-        /// <param name="right">The scalar on the right side of the operand.</param>
-        /// <returns>The <see cref="T"/>.</returns>
-        /// <exception cref="NotSupportedException">
-        /// Thrown if the given type parameter is not supported.
-        /// </exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static T ScalarSubtract(T left, T right)
-        {
-            if (typeof(T) == typeof(byte))
-            {
-                return (T)(object)(byte)((byte)(object)left - (byte)(object)right);
-            }
-
-            if (typeof(T) == typeof(float))
-            {
-                return (T)(object)((float)(object)left - (float)(object)right);
-            }
-
-            throw new NotSupportedException("Specified type is not supported");
-        }
-
-        /// <summary>
-        /// Computes the average of two scalar values.
-        /// </summary>
-        /// <param name="left">The scalar on the left side of the operand.</param>
-        /// <param name="right">The scalar on the right side of the operand.</param>
-        /// <returns>The <see cref="T"/>.</returns>
-        /// <exception cref="NotSupportedException">
-        /// Thrown if the given type parameter is not supported.
-        /// </exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static T ScalarAverage(T left, T right)
-        {
-            unchecked
-            {
-                if (typeof(T) == typeof(byte))
-                {
-                    return (T)(object)(byte)((byte)(object)left * (byte)(object)right * .5f);
-                }
-
-                if (typeof(T) == typeof(float))
-                {
-                    return (T)(object)((float)(object)left * (float)(object)right * .5f);
-                }
-
-                throw new NotSupportedException("Specified type is not supported");
-            }
-        }
-
-        /// <summary>
-        /// Computes the product of multiplying two scalar values.
-        /// </summary>
-        /// <param name="left">The scalar on the left side of the operand.</param>
-        /// <param name="right">The scalar on the right side of the operand.</param>
-        /// <returns>The <see cref="T"/>.</returns>
-        /// <exception cref="NotSupportedException">
-        /// Thrown if the given type parameter is not supported.
-        /// </exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static T ScalarMultiply(T left, T right)
-        {
-            unchecked
-            {
-                if (typeof(T) == typeof(byte))
-                {
-                    return (T)(object)(byte)((byte)(object)left * (byte)(object)right);
-                }
-
-                if (typeof(T) == typeof(float))
-                {
-                    return (T)(object)((float)(object)left * (float)(object)right);
-                }
-
-                throw new NotSupportedException("Specified type is not supported");
-            }
-        }
-
-        /// <summary>
-        /// Computes the dividend of dividing one scalar value by another.
-        /// </summary>
-        /// <param name="left">The scalar on the left side of the operand.</param>
-        /// <param name="right">The scalar on the right side of the operand.</param>
-        /// <returns>The <see cref="T"/>.</returns>
-        /// <exception cref="NotSupportedException">
-        /// Thrown if the given type parameter is not supported.
-        /// </exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static T ScalarDivide(T left, T right)
-        {
-            // TODO: Divide by zero
-            if (typeof(T) == typeof(byte))
-            {
-                return (T)(object)(byte)((byte)(object)left / (byte)(object)right);
-            }
-
-            if (typeof(T) == typeof(float))
-            {
-                return (T)(object)((float)(object)left / (float)(object)right);
-            }
-
-            throw new NotSupportedException("Specified type is not supported");
-        }
-
-        /// <summary>
-        /// Compares two scalar values for equality.
-        /// </summary>
-        /// <param name="left">The scalar on the left side of the operand.</param>
-        /// <param name="right">The scalar on the right side of the operand.</param>
-        /// <returns>True if the two values are equal; otherwise, false.</returns>
-        /// <exception cref="NotSupportedException">
-        /// Thrown if the given type parameter is not supported.
-        /// </exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool ScalarEquals(T left, T right)
-        {
-            if (typeof(T) == typeof(byte))
-            {
-                return (byte)(object)left == (byte)(object)right;
-            }
-
-            if (typeof(T) == typeof(float))
-            {
-                return Math.Abs((float)(object)left - (float)(object)right) < Epsilon;
-            }
-
-            throw new NotSupportedException("Specified type is not supported");
+            return this.backingVector.Equals(other.backingVector);
         }
 
         /// <summary>
@@ -594,20 +421,7 @@ namespace ImageProcessor.Colors
         /// </returns>
         private static int GetHashCode(Color<T> color)
         {
-            unchecked
-            {
-                Type type = typeof(T);
-                if (type != typeof(byte) && type != typeof(float))
-                {
-                    throw new NotSupportedException("Specified type is not supported");
-                }
-
-                int hashCode = color.R.GetHashCode();
-                hashCode = (hashCode * 397) ^ color.G.GetHashCode();
-                hashCode = (hashCode * 397) ^ color.B.GetHashCode();
-                hashCode = (hashCode * 397) ^ color.A.GetHashCode();
-                return hashCode;
-            }
+            return color.backingVector.GetHashCode();
         }
     }
 }

@@ -13,9 +13,34 @@ namespace ImageProcessor
     internal static class ComparableExtensions
     {
         /// <summary>
+        /// Restricts a value to be within a specified range.
+        /// </summary>
+        /// <param name="value">The value to clamp.</param>
+        /// <param name="min">The minimum value. If value is less than min, min will be returned.</param>
+        /// <param name="max">The maximum value. If value is greater than max, max will be returned.</param>
+        /// <typeparam name="T">The <see cref="Type"/> to clamp.</typeparam>
+        /// <returns>
+        /// The <see cref="IComparable{T}"/> representing the clamped value.
+        /// </returns>
+        public static T Clamp<T>(this T value, T min, T max) where T : IComparable<T>
+        {
+            if (value.CompareTo(min) < 0)
+            {
+                return min;
+            }
+
+            if (value.CompareTo(max) > 0)
+            {
+                return max;
+            }
+
+            return value;
+        }
+
+        /// <summary>
         /// Restricts a <see cref="byte"/> to be within a specified range.
         /// </summary>
-        /// <param name="value">The The value to clamp.</param>
+        /// <param name="value">The value to clamp.</param>
         /// <param name="min">The minimum value. If value is less than min, min will be returned.</param>
         /// <param name="max">The maximum value. If value is greater than max, max will be returned.</param>
         /// <returns>
@@ -40,7 +65,7 @@ namespace ImageProcessor
         /// <summary>
         /// Restricts a <see cref="int"/> to be within a specified range.
         /// </summary>
-        /// <param name="value">The The value to clamp.</param>
+        /// <param name="value">The value to clamp.</param>
         /// <param name="min">The minimum value. If value is less than min, min will be returned.</param>
         /// <param name="max">The maximum value. If value is greater than max, max will be returned.</param>
         /// <returns>
@@ -64,7 +89,7 @@ namespace ImageProcessor
         /// <summary>
         /// Restricts a <see cref="float"/> to be within a specified range.
         /// </summary>
-        /// <param name="value">The The value to clamp.</param>
+        /// <param name="value">The value to clamp.</param>
         /// <param name="min">The minimum value. If value is less than min, min will be returned.</param>
         /// <param name="max">The maximum value. If value is greater than max, max will be returned.</param>
         /// <returns>
@@ -88,7 +113,7 @@ namespace ImageProcessor
         /// <summary>
         /// Restricts a <see cref="double"/> to be within a specified range.
         /// </summary>
-        /// <param name="value">The The value to clamp.</param>
+        /// <param name="value">The value to clamp.</param>
         /// <param name="min">The minimum value. If value is less than min, min will be returned.</param>
         /// <param name="max">The maximum value. If value is greater than max, max will be returned.</param>
         /// <returns>
