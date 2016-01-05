@@ -7,14 +7,12 @@ namespace ImageProcessor
 {
     using System;
 
-    using ImageProcessor.Colors;
-
     /// <summary>
     /// The base class of all images. Encapsulates the basic properties and methods
     /// required to manipulate images.
     /// </summary>
     public abstract class ImageBase<T> : IImageBase<T>
-        where T : struct
+            where T : struct, IComparable<T>, IFormattable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ImageBase{T}"/> class.
@@ -69,6 +67,7 @@ namespace ImageProcessor
             Array.Copy(pixels, this.Pixels, pixels.Length);
         }
 
+        // ReSharper disable StaticMemberInGenericType
         /// <summary>
         /// Gets or sets the maximum allowable width in pixels.
         /// </summary>
@@ -78,6 +77,7 @@ namespace ImageProcessor
         /// Gets or sets the maximum allowable height in pixels.
         /// </summary>
         public static int MaxHeight { get; set; } = int.MaxValue;
+        // ReSharper restore StaticMemberInGenericType
 
         /// <summary>
         /// Gets the image pixels as byte array.
@@ -121,7 +121,7 @@ namespace ImageProcessor
         public int FrameDelay { get; set; }
 
         /// <inheritdoc/>
-        public T[] this[int x, int y]
+        public Color<T> this[int x, int y]
         {
             get
             {
@@ -138,8 +138,8 @@ namespace ImageProcessor
 #endif
 
                 int start = ((y * this.Width) + x) * 4;
-                return new IColor<T>().FromArray(this.Pixels);
-                //return new Color(this.Pixels[start], this.Pixels[start + 1], this.Pixels[start + 2], this.Pixels[start + 3]);
+
+                return new Color<T>(this.Pixels[start], this.Pixels[start + 1], this.Pixels[start + 2], this.Pixels[start + 3]);
             }
 
             set

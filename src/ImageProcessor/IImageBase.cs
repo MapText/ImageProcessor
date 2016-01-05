@@ -7,16 +7,14 @@ namespace ImageProcessor
 {
     using System;
 
-    using ImageProcessor.Colors;
-
     /// <summary>
     /// Encapsulates the basic properties and methods required to manipulate images.
     /// </summary>
     /// <typeparam name="T">
-    /// The object representing the type to store the image pixel color components.
+    /// The object representing the type used to store the image pixel color components.
     /// </typeparam>
     public interface IImageBase<T>
-        where T : struct
+        where T : struct, IComparable<T>, IFormattable
     {
         /// <summary>
         /// Gets the image pixels as byte array.
@@ -73,7 +71,7 @@ namespace ImageProcessor
         /// than zero and smaller than the width of the pixel.
         /// </param>
         /// <returns>The <see cref="Color"/> at the specified position.</returns>
-        T[] this[int x, int y] { get; set; }
+        Color<T> this[int x, int y] { get; set; }
 
         /// <summary>
         /// Sets the pixel array of the image to the given value.

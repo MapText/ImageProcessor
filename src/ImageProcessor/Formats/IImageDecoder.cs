@@ -5,6 +5,7 @@
 
 namespace ImageProcessor.Formats
 {
+    using System;
     using System.IO;
 
     /// <summary>
@@ -39,10 +40,13 @@ namespace ImageProcessor.Formats
         bool IsSupportedFileFormat(byte[] header);
 
         /// <summary>
-        /// Decodes the image from the specified stream to the <see cref="ImageBase"/>.
+        /// Decodes the image from the specified stream to the <see cref="Image{T}"/>.
         /// </summary>
-        /// <param name="image">The <see cref="ImageBase"/> to decode to.</param>
+        /// <param name="image">The <see cref="Image{T}"/> to decode to.</param>
         /// <param name="stream">The <see cref="Stream"/> containing image data.</param>
-        void Decode(Image image, Stream stream);
+        /// <typeparam name="T">
+        /// The object representing the type to store the image pixel color components.
+        /// </typeparam>
+        void Decode<T>(Image<T> image, Stream stream) where T : struct, IComparable<T>, IFormattable;
     }
 }

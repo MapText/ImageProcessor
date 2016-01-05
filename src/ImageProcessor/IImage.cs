@@ -9,7 +9,6 @@ namespace ImageProcessor
     using System.Collections.Generic;
     using System.IO;
 
-    using ImageProcessor.Colors;
     using ImageProcessor.Formats;
 
     /// <summary>
@@ -19,7 +18,7 @@ namespace ImageProcessor
     /// The object representing the type to store the image pixel color components.
     /// </typeparam>
     public interface IImage<T> : IImageBase<T>
-        where T : struct
+        where T : struct, IComparable<T>, IFormattable
     {
         /// <summary>
         /// Gets or sets the resolution of the image in x- direction. It is defined as
@@ -74,7 +73,7 @@ namespace ImageProcessor
         /// Gets the other frames for the animation.
         /// </summary>
         /// <value>The list of frame images.</value>
-        IList<ImageFrame> Frames { get; }
+        IList<ImageFrame<T>> Frames { get; }
 
         /// <summary>
         /// Gets the list of properties for storing meta information about this image.

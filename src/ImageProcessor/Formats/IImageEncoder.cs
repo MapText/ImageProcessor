@@ -10,6 +10,7 @@
 
 namespace ImageProcessor.Formats
 {
+    using System;
     using System.IO;
 
     /// <summary>
@@ -48,10 +49,13 @@ namespace ImageProcessor.Formats
         bool IsSupportedFileExtension(string extension);
 
         /// <summary>
-        /// Encodes the image to the specified stream from the <see cref="ImageBase"/>.
+        /// Encodes the image to the specified stream from the <see cref="ImageBase{T}"/>.
         /// </summary>
-        /// <param name="image">The <see cref="ImageBase"/> to encode from.</param>
+        /// <param name="image">The <see cref="ImageBase{T}"/> to encode from.</param>
         /// <param name="stream">The <see cref="Stream"/> to encode the image data to.</param>
-        void Encode(ImageBase image, Stream stream);
+        /// <typeparam name="T">
+        /// The object representing the type to store the image pixel color components.
+        /// </typeparam>
+        void Encode<T>(ImageBase<T> image, Stream stream) where T : struct, IComparable<T>, IFormattable;
     }
 }

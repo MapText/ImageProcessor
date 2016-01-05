@@ -30,20 +30,10 @@ namespace ImageProcessor.Formats
     /// </remarks>
     public class BmpDecoder : IImageDecoder
     {
-        /// <summary>
-        /// Gets the size of the header for this image type.
-        /// </summary>
-        /// <value>The size of the header.</value>
+        /// <inheritdoc/>
         public int HeaderSize => 2;
 
-        /// <summary>
-        /// Returns a value indicating whether the <see cref="IImageDecoder"/> supports the specified
-        /// file header.
-        /// </summary>
-        /// <param name="extension">The <see cref="string"/> containing the file extension.</param>
-        /// <returns>
-        /// True if the decoder supports the file extension; otherwise, false.
-        /// </returns>
+        /// <inheritdoc/>
         public bool IsSupportedFileExtension(string extension)
         {
             Guard.NotNullOrEmpty(extension, "extension");
@@ -54,14 +44,7 @@ namespace ImageProcessor.Formats
                 || extension.Equals("DIP", StringComparison.OrdinalIgnoreCase);
         }
 
-        /// <summary>
-        /// Returns a value indicating whether the <see cref="IImageDecoder"/> supports the specified
-        /// file header.
-        /// </summary>
-        /// <param name="header">The <see cref="T:byte[]"/> containing the file header.</param>
-        /// <returns>
-        /// True if the decoder supports the file header; otherwise, false.
-        /// </returns>
+        /// <inheritdoc/>
         public bool IsSupportedFileFormat(byte[] header)
         {
             bool isBmp = false;
@@ -74,12 +57,9 @@ namespace ImageProcessor.Formats
             return isBmp;
         }
 
-        /// <summary>
-        /// Decodes the image from the specified stream to the <see cref="ImageBase"/>.
-        /// </summary>
-        /// <param name="image">The <see cref="ImageBase"/> to decode to.</param>
-        /// <param name="stream">The <see cref="Stream"/> containing image data.</param>
-        public void Decode(Image image, Stream stream)
+        /// <inheritdoc/>
+        public void Decode<T>(Image<T> image, Stream stream)
+            where T : struct, IComparable<T>, IFormattable
         {
             new BmpDecoderCore().Decode(image, stream);
         }

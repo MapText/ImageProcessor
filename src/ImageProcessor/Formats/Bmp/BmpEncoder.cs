@@ -52,7 +52,8 @@ namespace ImageProcessor.Formats
         }
 
         /// <inheritdoc/>
-        public void Encode(ImageBase image, Stream stream)
+        public void Encode<T>(ImageBase<T> image, Stream stream)
+            where T : struct, IComparable<T>, IFormattable
         {
             Guard.NotNull(image, nameof(image));
             Guard.NotNull(stream, nameof(stream));
@@ -103,9 +104,10 @@ namespace ImageProcessor.Formats
         /// The <see cref="BinaryWriter"/> containing the stream to write to.
         /// </param>
         /// <param name="image">
-        /// The <see cref="ImageBase"/> containing pixel data.
+        /// The <see cref="ImageBase{T}"/> containing pixel data.
         /// </param>
-        private void WriteImage(BinaryWriter writer, ImageBase image)
+        private void WriteImage<T>(BinaryWriter writer, ImageBase<T> image)
+            where T : struct, IComparable<T>, IFormattable
         {
             // TODO: Add more compression formats.
             int amount = (image.Width * 3) % 4;
@@ -114,7 +116,7 @@ namespace ImageProcessor.Formats
                 amount = 4 - amount;
             }
 
-            float[] data = image.Pixels;
+            T[] data = image.Pixels;
 
             for (int y = image.Height - 1; y >= 0; y--)
             {
@@ -125,16 +127,16 @@ namespace ImageProcessor.Formats
                     // Limit the output range and multiply out from our floating point.
                     // Convert back to b-> g-> r-> a order.
                     // Convert to non-premultiplied color.
-                    float r = data[offset];
-                    float g = data[offset + 1];
-                    float b = data[offset + 2];
-                    float a = data[offset + 3];
+                    T r = data[offset];
+                    T g = data[offset + 1];
+                    T b = data[offset + 2];
+                    T a = data[offset + 3];
 
-                    Bgra32 color = Color.ToNonPremultiplied(new Color(r, g, b, a));
+                    Color<byte> color = Color<byte>.Cast(Color<T>.ToNonPremultiplied(new Color<T>(r, g, b, a)));
 
                     if (color.A < this.Threshold)
                     {
-                        color = new Bgra32(0, 0, 0, 0);
+                        color = Color<byte>.Empty;
                     }
 
                     writer.Write(color.B);

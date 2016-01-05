@@ -18,11 +18,12 @@ namespace ImageProcessor
     /// Encapsulates an image, which consists of the pixel data for a graphics image and its attributes.
     /// </summary>
     /// <remarks>
-    /// The image data is always stored in BGRA format, where the blue, green, red, and
-    /// alpha values are simple bytes.
+    /// The image data is always stored in RGBA format, where the red, green, blue, and
+    /// alpha values are the specified type.
     /// </remarks>
     [DebuggerDisplay("Image: {Width}x{Height}")]
-    public class Image : ImageBase, IImage
+    public class Image<T> : ImageBase<T>, IImage<T>
+        where T : struct, IComparable<T>, IFormattable
     {
         /// <summary>
         /// The default horizontal resolution value (dots per inch) in x direction.
@@ -39,6 +40,7 @@ namespace ImageProcessor
         /// <summary>
         /// The default collection of <see cref="IImageFormat"/>.
         /// </summary>
+        // ReSharper disable once StaticMemberInGenericType
         private static readonly Lazy<List<IImageFormat>> DefaultFormats =
             new Lazy<List<IImageFormat>>(() => new List<IImageFormat>
             {
@@ -49,7 +51,7 @@ namespace ImageProcessor
             });
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Image"/> class.
+        /// Initializes a new instance of the <see cref="Image{T}"/> class.
         /// </summary>
         public Image()
         {
@@ -59,7 +61,7 @@ namespace ImageProcessor
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Image"/> class
+        /// Initializes a new instance of the <see cref="Image{T}"/> class
         /// with the height and the width of the image.
         /// </summary>
         /// <param name="width">The width of the image in pixels.</param>
@@ -73,19 +75,19 @@ namespace ImageProcessor
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Image"/> class
+        /// Initializes a new instance of the <see cref="Image{T}"/> class
         /// by making a copy from another image.
         /// </summary>
         /// <param name="other">The other image, where the clone should be made from.</param>
         /// <exception cref="ArgumentNullException"><paramref name="other"/> is null.</exception>
-        public Image(Image other)
+        public Image(Image<T> other)
             : base(other)
         {
-            foreach (ImageFrame frame in other.Frames)
+            foreach (ImageFrame<T> frame in other.Frames)
             {
                 if (frame != null)
                 {
-                    this.Frames.Add(new ImageFrame(frame));
+                    this.Frames.Add(new ImageFrame<T>(frame));
                 }
             }
 
@@ -95,26 +97,26 @@ namespace ImageProcessor
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Image"/> class.
+        /// Initializes a new instance of the <see cref="Image{T}"/> class.
         /// </summary>
         /// <param name="other">
-        /// The other <see cref="ImageFrame"/> to create this instance from.
+        /// The other <see cref="ImageFrame{T}"/> to create this instance from.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// Thrown if the given <see cref="ImageFrame"/> is null.
+        /// Thrown if the given <see cref="ImageFrame{T}"/> is null.
         /// </exception>
-        public Image(ImageFrame other)
+        public Image(ImageFrame<T> other)
             : base(other)
         {
             this.HorizontalResolution = DefaultHorizontalResolution;
             this.VerticalResolution = DefaultVerticalResolution;
-            
+
             // Most likely a gif
             this.CurrentImageFormat = DefaultFormats.Value.First(f => f.GetType() == typeof(GifFormat));
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Image"/> class.
+        /// Initializes a new instance of the <see cref="Image{T}"/> class.
         /// </summary>
         /// <param name="stream">
         /// The stream containing image information.
@@ -127,7 +129,7 @@ namespace ImageProcessor
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Image"/> class.
+        /// Initializes a new instance of the <see cref="Image{T}"/> class.
         /// </summary>
         /// <param name="stream">
         /// The stream containing image information.
@@ -192,7 +194,7 @@ namespace ImageProcessor
         public ushort RepeatCount { get; set; }
 
         /// <inheritdoc/>
-        public IList<ImageFrame> Frames { get; } = new List<ImageFrame>();
+        public IList<ImageFrame<T>> Frames { get; } = new List<ImageFrame<T>>();
 
         /// <inheritdoc/>
         public IList<ImageProperty> Properties { get; } = new List<ImageProperty>();
