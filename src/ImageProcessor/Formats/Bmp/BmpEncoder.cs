@@ -132,7 +132,7 @@ namespace ImageProcessor.Formats
                     T b = data[offset + 2];
                     T a = data[offset + 3];
 
-                    Color<byte> color = Color<byte>.Cast(Color<T>.ToNonPremultiplied(new Color<T>(r, g, b, a)));
+                    Color<byte> color = Color<byte>.Cast(Color<T>.ToNonPremultiplied(new Color<T>(r, g, b, a)).Limited);
 
                     if (color.A < this.Threshold)
                     {

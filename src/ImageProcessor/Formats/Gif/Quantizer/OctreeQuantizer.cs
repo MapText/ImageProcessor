@@ -84,7 +84,7 @@ namespace ImageProcessor.Formats
         /// This function need only be overridden if your quantize algorithm needs two passes,
         /// such as an Octree quantizer.
         /// </remarks>
-        protected override void InitialQuantizePixel(Bgra32 pixel)
+        protected override void InitialQuantizePixel(Color<byte> pixel)
         {
             // Add the color to the Octree
             this.octree.AddColor(pixel);
@@ -99,7 +99,7 @@ namespace ImageProcessor.Formats
         /// <returns>
         /// The quantized value
         /// </returns>
-        protected override byte QuantizePixel(Bgra32 pixel)
+        protected override byte QuantizePixel(Color<byte> pixel)
         {
             // The color at [maxColors] is set to transparent
             byte paletteIndex = (byte)this.maxColors;
@@ -119,12 +119,12 @@ namespace ImageProcessor.Formats
         /// <returns>
         /// The new color palette
         /// </returns>
-        protected override List<Bgra32> GetPalette()
+        protected override List<Color<byte>> GetPalette()
         {
             // First off convert the Octree to maxColors colors
-            List<Bgra32> palette = this.octree.Palletize(Math.Max(this.maxColors - 1, 1));
+            List<Color<byte>> palette = this.octree.Palletize(Math.Max(this.maxColors - 1, 1));
 
-            palette.Add(Bgra32.Empty);
+            palette.Add(Color<byte>.Empty);
 
             return palette;
         }
@@ -203,9 +203,9 @@ namespace ImageProcessor.Formats
             /// Add a given color value to the Octree
             /// </summary>
             /// <param name="pixel">
-            /// The <see cref="Bgra32"/>containing color information to add.
+            /// The <see cref="Color{Byte}"/>containing color information to add.
             /// </param>
-            public void AddColor(Bgra32 pixel)
+            public void AddColor(Color<byte> pixel)
             {
                 // Check if this request is for the same color as the last
                 if (this.previousColor == pixel.Bgra)
@@ -237,9 +237,9 @@ namespace ImageProcessor.Formats
             /// The maximum number of colors
             /// </param>
             /// <returns>
-            /// An <see cref="List{Bgra}"/> with the palletized colors
+            /// An <see cref="List{Color}"/> with the palletized colors
             /// </returns>
-            public List<Bgra32> Palletize(int colorCount)
+            public List<Color<byte>> Palletize(int colorCount)
             {
                 while (this.Leaves > colorCount)
                 {
@@ -247,7 +247,7 @@ namespace ImageProcessor.Formats
                 }
 
                 // Now palletize the nodes
-                List<Bgra32> palette = new List<Bgra32>(this.Leaves);
+                List<Color<byte>> palette = new List<Color<byte>>(this.Leaves);
                 int paletteIndex = 0;
                 this.root.ConstructPalette(palette, ref paletteIndex);
 
@@ -259,12 +259,12 @@ namespace ImageProcessor.Formats
             /// Get the palette index for the passed color
             /// </summary>
             /// <param name="pixel">
-            /// The <see cref="Bgra32"/> containing the pixel data.
+            /// The <see cref="Color{Byte}"/> containing the pixel data.
             /// </param>
             /// <returns>
             /// The index of the given structure.
             /// </returns>
-            public int GetPaletteIndex(Bgra32 pixel)
+            public int GetPaletteIndex(Color<byte> pixel)
             {
                 return this.root.GetPaletteIndex(pixel, 0);
             }
@@ -400,7 +400,7 @@ namespace ImageProcessor.Formats
                 /// <param name="octree">
                 /// The tree to which this node belongs
                 /// </param>
-                public void AddColor(Bgra32 pixel, int colorBits, int level, Octree octree)
+                public void AddColor(Color<byte> pixel, int colorBits, int level, Octree octree)
                 {
                     // Update the color information if this is a leaf
                     if (this.leaf)
@@ -471,7 +471,7 @@ namespace ImageProcessor.Formats
                 /// <param name="index">
                 /// The current palette index
                 /// </param>
-                public void ConstructPalette(List<Bgra32> palette, ref int index)
+                public void ConstructPalette(List<Color<byte>> palette, ref int index)
                 {
                     if (this.leaf)
                     {
@@ -483,7 +483,7 @@ namespace ImageProcessor.Formats
                         byte b = (this.blue / this.pixelCount).ToByte();
 
                         // And set the color of the palette entry
-                        palette.Add(new Bgra32(b, g, r));
+                        palette.Add(new Color<byte>(r, g, b));
                     }
                     else
                     {
@@ -502,15 +502,13 @@ namespace ImageProcessor.Formats
                 /// Return the palette index for the passed color
                 /// </summary>
                 /// <param name="pixel">
-                /// The <see cref="Bgra32"/> representing the pixel.
+                /// The <see cref="Color{Byte}"/> representing the pixel.
                 /// </param>
-                /// <param name="level">
-                /// The level.
-                /// </param>
+                /// <param name="level">The level.</param>
                 /// <returns>
                 /// The <see cref="int"/> representing the index of the pixel in the palette.
                 /// </returns>
-                public int GetPaletteIndex(Bgra32 pixel, int level)
+                public int GetPaletteIndex(Color<byte> pixel, int level)
                 {
                     int index = this.paletteIndex;
 
@@ -540,7 +538,7 @@ namespace ImageProcessor.Formats
                 /// <param name="pixel">
                 /// The pixel to add.
                 /// </param>
-                public void Increment(Bgra32 pixel)
+                public void Increment(Color<byte> pixel)
                 {
                     this.pixelCount++;
                     this.red += pixel.R;

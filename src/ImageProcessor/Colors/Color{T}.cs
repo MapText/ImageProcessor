@@ -133,6 +133,18 @@ namespace ImageProcessor
         public T A => this.backingVector[3];
 
         /// <summary>
+        /// Gets the <see cref="Color{T}"/> integer representation of the color.
+        /// </summary>
+        public int Bgra
+        {
+            get
+            {
+                Color<byte> color = Color<byte>.Cast(ToNonPremultiplied(this.Limited));
+                return (color.R << 16) | (color.G << 8) | (color.B << 0) | (color.A << 24);
+            }
+        }
+
+        /// <summary>
         /// Gets a value indicating whether this <see cref="Color"/> is empty.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]

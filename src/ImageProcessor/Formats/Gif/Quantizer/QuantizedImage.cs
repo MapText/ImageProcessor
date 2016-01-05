@@ -20,7 +20,7 @@ namespace ImageProcessor.Formats
         /// <param name="height">The image height.</param>
         /// <param name="palette">The color palette.</param>
         /// <param name="pixels">The quantized pixels.</param>
-        public QuantizedImage(int width, int height, Bgra32[] palette, byte[] pixels)
+        public QuantizedImage(int width, int height, Color<byte>[] palette, byte[] pixels)
         {
             Guard.MustBeGreaterThan(width, 0, nameof(width));
             Guard.MustBeGreaterThan(height, 0, nameof(height));
@@ -52,7 +52,7 @@ namespace ImageProcessor.Formats
         /// <summary>
         /// Gets the color palette of this <see cref="T:QuantizedImage"/>.
         /// </summary>
-        public Bgra32[] Palette { get; }
+        public Color<byte>[] Palette { get; }
 
         /// <summary>
         /// Gets the pixels of this <see cref="T:QuantizedImage"/>.
@@ -63,21 +63,21 @@ namespace ImageProcessor.Formats
         /// Converts this quantized image to a normal image.
         /// </summary>
         /// <returns>
-        /// The <see cref="Image"/>
+        /// The <see cref="Image{Byte}"/>
         /// </returns>
-        public Image ToImage()
+        public Image<byte> ToImage()
         {
-            Image image = new Image();
+            Image<byte> image = new Image<byte>();
 
             int pixelCount = this.Pixels.Length;
             int palletCount = this.Palette.Length - 1;
-            float[] bgraPixels = new float[pixelCount * 4];
+            byte[] bgraPixels = new byte[pixelCount * 4];
 
             Parallel.For(0, pixelCount,
                 i =>
                     {
                         int offset = i * 4;
-                        Color color = this.Palette[Math.Min(palletCount, this.Pixels[i])];
+                        Color<byte> color = this.Palette[Math.Min(palletCount, this.Pixels[i])];
                         bgraPixels[offset] = color.R;
                         bgraPixels[offset + 1] = color.G;
                         bgraPixels[offset + 2] = color.B;

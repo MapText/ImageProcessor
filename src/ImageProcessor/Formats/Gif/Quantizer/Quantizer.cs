@@ -5,6 +5,7 @@
 
 namespace ImageProcessor.Formats
 {
+    using System;
     using System.Collections.Generic;
 
     /// <summary>
@@ -40,7 +41,8 @@ namespace ImageProcessor.Formats
         /// <returns>
         /// A <see cref="T:byte[]"/> representing a quantized version of the image pixels.
         /// </returns>
-        public QuantizedImage Quantize(ImageBase imageBase)
+        public QuantizedImage Quantize<T>(ImageBase<T> imageBase)
+            where T : struct, IComparable<T>, IFormattable
         {
             // Get the size of the source image
             int height = imageBase.Height;
@@ -57,7 +59,7 @@ namespace ImageProcessor.Formats
             byte[] quantizedPixels = new byte[width * height];
 
             // Get the pallete
-            List<Bgra32> palette = this.GetPalette();
+            List<Color<byte>> palette = this.GetPalette();
 
             this.SecondPass(imageBase, quantizedPixels, width, height);
 
@@ -70,7 +72,8 @@ namespace ImageProcessor.Formats
         /// <param name="source">The source data</param>
         /// <param name="width">The width in pixels of the image.</param>
         /// <param name="height">The height in pixels of the image.</param>
-        protected virtual void FirstPass(ImageBase source, int width, int height)
+        protected virtual void FirstPass<T>(ImageBase<T> source, int width, int height)
+            where T : struct, IComparable<T>, IFormattable
         {
             // Loop through each row
             for (int y = 0; y < height; y++)
@@ -79,7 +82,7 @@ namespace ImageProcessor.Formats
                 for (int x = 0; x < width; x++)
                 {
                     // Now I have the pixel, call the FirstPassQuantize function...
-                    this.InitialQuantizePixel(source[x, y]);
+                    this.InitialQuantizePixel(Color<byte>.Cast(source[x, y]));
                 }
             }
         }
@@ -91,13 +94,14 @@ namespace ImageProcessor.Formats
         /// <param name="output">The output pixel array</param>
         /// <param name="width">The width in pixels of the image</param>
         /// <param name="height">The height in pixels of the image</param>
-        protected virtual void SecondPass(ImageBase source, byte[] output, int width, int height)
+        protected virtual void SecondPass<T>(ImageBase<T> source, byte[] output, int width, int height)
+            where T : struct, IComparable<T>, IFormattable
         {
             int i = 0;
 
             // Convert the first pixel, so that I have values going into the loop.
             // Implicit cast here from Color.
-            Bgra32 previousPixel = source[0, 0];
+            Color<byte> previousPixel = Color<byte>.Cast(source[0, 0]);
             byte pixelValue = this.QuantizePixel(previousPixel);
 
             output[0] = pixelValue;
@@ -106,7 +110,7 @@ namespace ImageProcessor.Formats
             {
                 for (int x = 0; x < width; x++)
                 {
-                    Bgra32 sourcePixel = source[x, y];
+                    Color<byte> sourcePixel = Color<byte>.Cast(source[x, y]);
 
                     // Check if this is the same as the last pixel. If so use that value
                     // rather than calculating it again. This is an inexpensive optimization.
@@ -134,7 +138,7 @@ namespace ImageProcessor.Formats
         /// This function need only be overridden if your quantize algorithm needs two passes,
         /// such as an Octree quantizer.
         /// </remarks>
-        protected virtual void InitialQuantizePixel(Bgra32 pixel)
+        protected virtual void InitialQuantizePixel(Color<byte> pixel)
         {
         }
 
@@ -147,7 +151,7 @@ namespace ImageProcessor.Formats
         /// <returns>
         /// The quantized value
         /// </returns>
-        protected abstract byte QuantizePixel(Bgra32 pixel);
+        protected abstract byte QuantizePixel(Color<byte> pixel);
 
         /// <summary>
         /// Retrieve the palette for the quantized image
@@ -155,6 +159,6 @@ namespace ImageProcessor.Formats
         /// <returns>
         /// The new color palette
         /// </returns>
-        protected abstract List<Bgra32> GetPalette();
+        protected abstract List<Color<byte>> GetPalette();
     }
 }
