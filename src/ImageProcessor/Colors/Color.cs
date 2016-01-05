@@ -360,7 +360,7 @@ namespace ImageProcessor
         }
 
         /// <summary>
-        /// Compresseses a linear color signal to its sRGB equivalent.
+        /// Compresses a linear color signal to its sRGB equivalent.
         /// <see href="http://www.4p8.com/eric.brasseur/gamma.html#formulas"/>
         /// <see href="http://entropymine.com/imageworsener/srgbformula/"/>
         /// </summary>

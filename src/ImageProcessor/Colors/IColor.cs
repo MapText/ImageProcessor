@@ -14,10 +14,24 @@ namespace ImageProcessor.Colors
     public interface IColor<T>
         where T : struct
     {
-        IColor<T> Compress(IColor<T> color);
+        /// <summary>
+        /// Gets or sets the red component of the color.
+        /// </summary>
+        T R { get; set; }
 
-        IColor<T> Expand(IColor<T> color);
+        /// <summary>
+        /// Gets or sets the green component of the color.
+        /// </summary>
+        T G { get; set; }
 
-        IColor<T> Lerp(IColor<T> from, IColor<T> to, T amount);
+        /// <summary>
+        /// Gets or sets the blue component of the color.
+        /// </summary>
+        T B { get; set; }
+
+        /// <summary>
+        /// Gets or sets the alpha component of the color.
+        /// </summary>
+        T A { get; set; }
     }
 }
