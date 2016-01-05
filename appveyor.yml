@@ -1,44 +1,44 @@
-version: v3.0.0.{build}
-os: Visual Studio 2015
-
-install:
-# Remove NuGet v2 source as we want to use v3 for everything
-- cmd: nuget sources remove -Name nuget.org
-
-before_build:
-- cmd: >-
-    dnvm install 1.0.0-rc1-final -r clr
-
-    dnvm install 1.0.0-rc1-final -r coreclr -arch x64 -alias x64
-
-    dnvm use 1.0.0-rc1-final -r coreclr -a x64
-
-    dnvm list
-
-    dnu restore src\ImageProcessor
-
-    dnu restore tests\ImageProcessor.Tests
-
-    cd build
-
-    npm install
-
-    node appveyor-project-version-patch.js
-
-    cd..
-    
-build_script:
-- cmd: '"%programfiles(x86)%\MSBuild\14.0\Bin\amd64\MsBuild.exe" ImageProcessor.sln /verbosity:minimal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /p:RuntimeToolingDirectory="%USERPROFILE%\.dnx\runtimes\dnx-coreclr-win-x64.1.0.0-rc1-final"'
-
-test_script:
-- cmd: >-
-    dnvm use 1.0.0-rc1-final -r coreclr -a x64
-
-    cd tests/ImageProcessor.Tests
-
-    dnx test
-artifacts:
-- path: artifacts\bin\ImageProcessor\**\*.nupkg
+# version: v3.0.0.{build}
+# os: Visual Studio 2015
+# 
+# install:
+# # Remove NuGet v2 source as we want to use v3 for everything
+# - cmd: nuget sources remove -Name nuget.org
+# 
+# before_build:
+# - cmd: >-
+#     dnvm install 1.0.0-rc1-final -r clr
+# 
+#     dnvm install 1.0.0-rc1-final -r coreclr -arch x64 -alias x64
+# 
+#     dnvm use 1.0.0-rc1-final -r coreclr -a x64
+# 
+#     dnvm list
+# 
+#     dnu restore src\ImageProcessor
+# 
+#     dnu restore tests\ImageProcessor.Tests
+# 
+#     cd build
+# 
+#     npm install
+# 
+#     node appveyor-project-version-patch.js
+# 
+#     cd..
+#     
+# build_script:
+# - cmd: '"%programfiles(x86)%\MSBuild\14.0\Bin\amd64\MsBuild.exe" ImageProcessor.sln /verbosity:minimal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /p:RuntimeToolingDirectory="%USERPROFILE%\.dnx\runtimes\dnx-coreclr-win-x64.1.0.0-rc1-final"'
+# 
+# test_script:
+# - cmd: >-
+#     dnvm use 1.0.0-rc1-final -r coreclr -a x64
+# 
+#     cd tests/ImageProcessor.Tests
+# 
+#     dnx test
+# artifacts:
+# - path: artifacts\bin\ImageProcessor\**\*.nupkg
 
 #deploy:
 #     # MyGet Deployment for builds & releases

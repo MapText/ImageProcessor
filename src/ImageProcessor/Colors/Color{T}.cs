@@ -1,13 +1,14 @@
-﻿// <copyright file="Color.cs" company="James Jackson-South">
+﻿// <copyright file="Color{T}.cs" company="James Jackson-South">
 // Copyright (c) James Jackson-South and contributors.
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
 
-namespace ImageProcessor.Colors
+namespace ImageProcessor
 {
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Linq;
     using System.Numerics;
     using System.Runtime.CompilerServices;
 
@@ -24,9 +25,25 @@ namespace ImageProcessor.Colors
         public static readonly Color<T> Empty = default(Color<T>);
 
         /// <summary>
+        /// The epsilon for comparing floating point numbers.
+        /// </summary>
+        private const float Epsilon = 0.0001f;
+
+        /// <summary>
         /// The backing vector for SIMD support.
         /// </summary>
         private Vector<T> backingVector;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Color{T}"/> struct with the alpha component set to 255.
+        /// </summary>
+        /// <param name="r">The red component of this <see cref="Color{T}"/>.</param>
+        /// <param name="g">The green component of this <see cref="Color{T}"/>.</param>
+        /// <param name="b">The blue component of this <see cref="Color{T}"/>.</param>
+        public Color(T r, T g, T b)
+            : this(r, g, b, (T)(object)255)
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Color{T}"/> struct.
@@ -232,6 +249,24 @@ namespace ImageProcessor.Colors
         public static bool operator !=(Color<T> left, Color<T> right)
         {
             return !left.Equals(right);
+        }
+
+
+        /// <summary>
+        /// Casts the components of the given color to the specified type.
+        /// </summary>
+        /// <param name="color">The color to cast from.</param>
+        /// <typeparam name="TType">The type to cast the components to.</typeparam>
+        /// <returns>
+        /// The <see cref="Color{T}"/>.
+        /// </returns>
+        public static Color<T> Cast<TType>(Color<TType> color)
+            where TType : struct, IComparable<TType>, IFormattable
+        {
+            TType[] components = new TType[4];
+            color.backingVector.CopyTo(components);
+            Vector<T> vector = new Vector<T>(components.Cast<T>().ToArray());
+            return new Color<T>(vector);
         }
 
         /// <summary>
