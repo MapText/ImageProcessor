@@ -1,0 +1,721 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F2E4FC81-5858-4CF2-80EA-6EA5FDE8D9FF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ImageProcessor.Framework</RootNamespace>
+    <AssemblyName>ImageProcessor.Framework</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Numerics.Vectors.4.1.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\ImageProcessor\Colors\Color.cs">
+      <Link>Colors\Color.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Colors\ColorDefinitions.cs">
+      <Link>Colors\ColorDefinitions.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Colors\Colorspaces\Bgra32.cs">
+      <Link>Colors\Colorspaces\Bgra32.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Colors\Colorspaces\CieLab.cs">
+      <Link>Colors\Colorspaces\CieLab.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Colors\Colorspaces\CieXyz.cs">
+      <Link>Colors\Colorspaces\CieXyz.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Colors\Colorspaces\Cmyk.cs">
+      <Link>Colors\Colorspaces\Cmyk.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Colors\Colorspaces\Hsl.cs">
+      <Link>Colors\Colorspaces\Hsl.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Colors\Colorspaces\Hsv.cs">
+      <Link>Colors\Colorspaces\Hsv.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Colors\Colorspaces\YCbCr.cs">
+      <Link>Colors\Colorspaces\YCbCr.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Colors\ColorspaceTransforms.cs">
+      <Link>Colors\ColorspaceTransforms.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Colors\ColorTransforms.cs">
+      <Link>Colors\ColorTransforms.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Colors\IAlmostEquatable.cs">
+      <Link>Colors\IAlmostEquatable.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Colors\RgbaComponent.cs">
+      <Link>Colors\RgbaComponent.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Common\Exceptions\ImageFormatException.cs">
+      <Link>Common\Exceptions\ImageFormatException.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Common\Extensions\ByteExtensions.cs">
+      <Link>Common\Extensions\ByteExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Common\Extensions\ComparableExtensions.cs">
+      <Link>Common\Extensions\ComparableExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Common\Extensions\EnumerableExtensions.cs">
+      <Link>Common\Extensions\EnumerableExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Common\Helpers\Guard.cs">
+      <Link>Common\Helpers\Guard.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Common\Helpers\ImageMaths.cs">
+      <Link>Common\Helpers\ImageMaths.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\Alpha.cs">
+      <Link>Filters\Alpha.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\BackgroundColor.cs">
+      <Link>Filters\BackgroundColor.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\Binarization\Threshold.cs">
+      <Link>Filters\Binarization\Threshold.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\Blend.cs">
+      <Link>Filters\Blend.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\Brightness.cs">
+      <Link>Filters\Brightness.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\ColorMatrix\BlackWhite.cs">
+      <Link>Filters\ColorMatrix\BlackWhite.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\ColorMatrix\ColorMatrixFilter.cs">
+      <Link>Filters\ColorMatrix\ColorMatrixFilter.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\ColorMatrix\GreyscaleBt601.cs">
+      <Link>Filters\ColorMatrix\GreyscaleBt601.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\ColorMatrix\GreyscaleBt709.cs">
+      <Link>Filters\ColorMatrix\GreyscaleBt709.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\ColorMatrix\GreyscaleMode.cs">
+      <Link>Filters\ColorMatrix\GreyscaleMode.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\ColorMatrix\Hue.cs">
+      <Link>Filters\ColorMatrix\Hue.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\ColorMatrix\IColorMatrixFilter.cs">
+      <Link>Filters\ColorMatrix\IColorMatrixFilter.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\ColorMatrix\Kodachrome.cs">
+      <Link>Filters\ColorMatrix\Kodachrome.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\ColorMatrix\Lomograph.cs">
+      <Link>Filters\ColorMatrix\Lomograph.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\ColorMatrix\Polaroid.cs">
+      <Link>Filters\ColorMatrix\Polaroid.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\ColorMatrix\Saturation.cs">
+      <Link>Filters\ColorMatrix\Saturation.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\ColorMatrix\Sepia.cs">
+      <Link>Filters\ColorMatrix\Sepia.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\Contrast.cs">
+      <Link>Filters\Contrast.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\Convolution\BoxBlur.cs">
+      <Link>Filters\Convolution\BoxBlur.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\Convolution\Convolution2DFilter.cs">
+      <Link>Filters\Convolution\Convolution2DFilter.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\Convolution\Convolution2PassFilter.cs">
+      <Link>Filters\Convolution\Convolution2PassFilter.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\Convolution\ConvolutionFilter.cs">
+      <Link>Filters\Convolution\ConvolutionFilter.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\Convolution\EdgeDetection\EdgeDetector2DFilter.cs">
+      <Link>Filters\Convolution\EdgeDetection\EdgeDetector2DFilter.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\Convolution\EdgeDetection\EdgeDetectorFilter.cs">
+      <Link>Filters\Convolution\EdgeDetection\EdgeDetectorFilter.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\Convolution\EdgeDetection\IEdgeDetectorFilter.cs">
+      <Link>Filters\Convolution\EdgeDetection\IEdgeDetectorFilter.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\Convolution\EdgeDetection\Kayyali.cs">
+      <Link>Filters\Convolution\EdgeDetection\Kayyali.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\Convolution\EdgeDetection\Kirsch.cs">
+      <Link>Filters\Convolution\EdgeDetection\Kirsch.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\Convolution\EdgeDetection\Laplacian3X3.cs">
+      <Link>Filters\Convolution\EdgeDetection\Laplacian3X3.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\Convolution\EdgeDetection\Laplacian5X5.cs">
+      <Link>Filters\Convolution\EdgeDetection\Laplacian5X5.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\Convolution\EdgeDetection\LaplacianOfGaussian.cs">
+      <Link>Filters\Convolution\EdgeDetection\LaplacianOfGaussian.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\Convolution\EdgeDetection\Prewitt.cs">
+      <Link>Filters\Convolution\EdgeDetection\Prewitt.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\Convolution\EdgeDetection\RobertsCross.cs">
+      <Link>Filters\Convolution\EdgeDetection\RobertsCross.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\Convolution\EdgeDetection\Scharr.cs">
+      <Link>Filters\Convolution\EdgeDetection\Scharr.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\Convolution\EdgeDetection\Sobel.cs">
+      <Link>Filters\Convolution\EdgeDetection\Sobel.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\Convolution\GuassianBlur.cs">
+      <Link>Filters\Convolution\GuassianBlur.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\Convolution\GuassianSharpen.cs">
+      <Link>Filters\Convolution\GuassianSharpen.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\Glow.cs">
+      <Link>Filters\Glow.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\ImageFilterExtensions.cs">
+      <Link>Filters\ImageFilterExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\Invert.cs">
+      <Link>Filters\Invert.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\Pixelate.cs">
+      <Link>Filters\Pixelate.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Filters\Vignette.cs">
+      <Link>Filters\Vignette.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Bmp\BmpCompression.cs">
+      <Link>Formats\Bmp\BmpCompression.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Bmp\BmpDecoder.cs">
+      <Link>Formats\Bmp\BmpDecoder.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Bmp\BmpDecoderCore.cs">
+      <Link>Formats\Bmp\BmpDecoderCore.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Bmp\BmpEncoder.cs">
+      <Link>Formats\Bmp\BmpEncoder.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Bmp\BmpFileHeader.cs">
+      <Link>Formats\Bmp\BmpFileHeader.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Bmp\BmpFormat.cs">
+      <Link>Formats\Bmp\BmpFormat.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Bmp\BmpInfoHeader.cs">
+      <Link>Formats\Bmp\BmpInfoHeader.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Gif\BitEncoder.cs">
+      <Link>Formats\Gif\BitEncoder.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Gif\DisposalMethod.cs">
+      <Link>Formats\Gif\DisposalMethod.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Gif\GifConstants.cs">
+      <Link>Formats\Gif\GifConstants.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Gif\GifDecoder.cs">
+      <Link>Formats\Gif\GifDecoder.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Gif\GifDecoderCore.cs">
+      <Link>Formats\Gif\GifDecoderCore.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Gif\GifEncoder.cs">
+      <Link>Formats\Gif\GifEncoder.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Gif\GifFormat.cs">
+      <Link>Formats\Gif\GifFormat.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Gif\LzwDecoder.cs">
+      <Link>Formats\Gif\LzwDecoder.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Gif\LzwEncoder.cs">
+      <Link>Formats\Gif\LzwEncoder.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Gif\Quantizer\IQuantizer.cs">
+      <Link>Formats\Gif\Quantizer\IQuantizer.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Gif\Quantizer\OctreeQuantizer.cs">
+      <Link>Formats\Gif\Quantizer\OctreeQuantizer.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Gif\Quantizer\QuantizedImage.cs">
+      <Link>Formats\Gif\Quantizer\QuantizedImage.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Gif\Quantizer\Quantizer.cs">
+      <Link>Formats\Gif\Quantizer\Quantizer.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Gif\Sections\GifGraphicsControlExtension.cs">
+      <Link>Formats\Gif\Sections\GifGraphicsControlExtension.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Gif\Sections\GifImageDescriptor.cs">
+      <Link>Formats\Gif\Sections\GifImageDescriptor.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Gif\Sections\GifLogicalScreenDescriptor.cs">
+      <Link>Formats\Gif\Sections\GifLogicalScreenDescriptor.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\IImageDecoder.cs">
+      <Link>Formats\IImageDecoder.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\IImageEncoder.cs">
+      <Link>Formats\IImageEncoder.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\IImageFormat.cs">
+      <Link>Formats\IImageFormat.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\JpegDecoder.cs">
+      <Link>Formats\Jpg\JpegDecoder.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\JpegEncoder.cs">
+      <Link>Formats\Jpg\JpegEncoder.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\JpegFormat.cs">
+      <Link>Formats\Jpg\JpegFormat.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\BitmapDestination.cs">
+      <Link>Formats\Jpg\LibJpeg\BitmapDestination.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\BitStream.cs">
+      <Link>Formats\Jpg\LibJpeg\BitStream.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\DensityUnit.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\DensityUnit.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\bitread_perm_state.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\bitread_perm_state.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\bitread_working_state.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\bitread_working_state.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\ComponentBuffer.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\ComponentBuffer.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\d_derived_tbl.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\d_derived_tbl.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\huff_entropy_decoder.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\huff_entropy_decoder.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\huff_entropy_encoder.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\huff_entropy_encoder.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\JpegUtils.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\JpegUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\jpeg_color_converter.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\jpeg_color_converter.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\jpeg_color_deconverter.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\jpeg_color_deconverter.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\jpeg_color_quantizer.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\jpeg_color_quantizer.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\jpeg_comp_master.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\jpeg_comp_master.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\jpeg_c_coef_controller.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\jpeg_c_coef_controller.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\jpeg_c_main_controller.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\jpeg_c_main_controller.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\jpeg_c_prep_controller.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\jpeg_c_prep_controller.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\jpeg_decomp_master.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\jpeg_decomp_master.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\jpeg_downsampler.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\jpeg_downsampler.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\jpeg_d_coef_controller.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\jpeg_d_coef_controller.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\jpeg_d_main_controller.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\jpeg_d_main_controller.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\jpeg_d_post_controller.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\jpeg_d_post_controller.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\jpeg_entropy_decoder.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\jpeg_entropy_decoder.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\jpeg_entropy_encoder.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\jpeg_entropy_encoder.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\jpeg_forward_dct.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\jpeg_forward_dct.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\jpeg_input_controller.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\jpeg_input_controller.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\jpeg_inverse_dct.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\jpeg_inverse_dct.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\jpeg_marker_reader.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\jpeg_marker_reader.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\jpeg_marker_writer.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\jpeg_marker_writer.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\jpeg_scan_info.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\jpeg_scan_info.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\jpeg_upsampler.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\jpeg_upsampler.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\J_BUF_MODE.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\J_BUF_MODE.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\my_1pass_cquantizer.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\my_1pass_cquantizer.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\my_2pass_cquantizer.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\my_2pass_cquantizer.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\my_c_coef_controller.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\my_c_coef_controller.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\my_destination_mgr.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\my_destination_mgr.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\my_merged_upsampler.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\my_merged_upsampler.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\my_source_mgr.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\my_source_mgr.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\my_trans_c_coef_controller.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\my_trans_c_coef_controller.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\my_upsampler.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\my_upsampler.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\phuff_entropy_decoder.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\phuff_entropy_decoder.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\Internal\phuff_entropy_encoder.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\Internal\phuff_entropy_encoder.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\JBLOCK.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\JBLOCK.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\JHUFF_TBL.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\JHUFF_TBL.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\JpegConstants.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\JpegConstants.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\jpeg_common_struct.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\jpeg_common_struct.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\jpeg_component_info.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\jpeg_component_info.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\jpeg_compress_struct.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\jpeg_compress_struct.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\jpeg_decompress_struct.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\jpeg_decompress_struct.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\jpeg_destination_mgr.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\jpeg_destination_mgr.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\jpeg_error_mgr.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\jpeg_error_mgr.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\JPEG_MARKER.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\JPEG_MARKER.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\jpeg_marker_struct.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\jpeg_marker_struct.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\jpeg_progress_mgr.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\jpeg_progress_mgr.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\jpeg_source_mgr.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\jpeg_source_mgr.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\JQUANT_TBL.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\JQUANT_TBL.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\jvirt_array.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\jvirt_array.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\J_COLOR_SPACE.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\J_COLOR_SPACE.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\J_DCT_METHOD.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\J_DCT_METHOD.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\J_DITHER_MODE.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\J_DITHER_MODE.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\J_MESSAGE_CODE.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\J_MESSAGE_CODE.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Classic\ReadResult.cs">
+      <Link>Formats\Jpg\LibJpeg\Classic\ReadResult.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\CompressionParameters.cs">
+      <Link>Formats\Jpg\LibJpeg\CompressionParameters.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\DecompressionParameters.cs">
+      <Link>Formats\Jpg\LibJpeg\DecompressionParameters.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\DecompressorToJpegImage.cs">
+      <Link>Formats\Jpg\LibJpeg\DecompressorToJpegImage.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Enumerations.cs">
+      <Link>Formats\Jpg\LibJpeg\Enumerations.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\IDecompressDestination.cs">
+      <Link>Formats\Jpg\LibJpeg\IDecompressDestination.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\IRawImage.cs">
+      <Link>Formats\Jpg\LibJpeg\IRawImage.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Jpeg.cs">
+      <Link>Formats\Jpg\LibJpeg\Jpeg.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\JpegImage.cs">
+      <Link>Formats\Jpg\LibJpeg\JpegImage.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\LoadedImageAttributes.cs">
+      <Link>Formats\Jpg\LibJpeg\LoadedImageAttributes.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\RawImage.cs">
+      <Link>Formats\Jpg\LibJpeg\RawImage.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Sample.cs">
+      <Link>Formats\Jpg\LibJpeg\Sample.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\SampleRow.cs">
+      <Link>Formats\Jpg\LibJpeg\SampleRow.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Jpg\LibJpeg\Utils.cs">
+      <Link>Formats\Jpg\LibJpeg\Utils.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Png\GrayscaleReader.cs">
+      <Link>Formats\Png\GrayscaleReader.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Png\IColorReader.cs">
+      <Link>Formats\Png\IColorReader.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Png\PaletteIndexReader.cs">
+      <Link>Formats\Png\PaletteIndexReader.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Png\PngChunk.cs">
+      <Link>Formats\Png\PngChunk.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Png\PngChunkTypes.cs">
+      <Link>Formats\Png\PngChunkTypes.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Png\PngColorTypeInformation.cs">
+      <Link>Formats\Png\PngColorTypeInformation.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Png\PngDecoder.cs">
+      <Link>Formats\Png\PngDecoder.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Png\PngDecoderCore.cs">
+      <Link>Formats\Png\PngDecoderCore.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Png\PngEncoder.cs">
+      <Link>Formats\Png\PngEncoder.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Png\PngFormat.cs">
+      <Link>Formats\Png\PngFormat.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Png\PngHeader.cs">
+      <Link>Formats\Png\PngHeader.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Png\TrueColorReader.cs">
+      <Link>Formats\Png\TrueColorReader.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Png\Zlib\Adler32.cs">
+      <Link>Formats\Png\Zlib\Adler32.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Png\Zlib\Crc32.cs">
+      <Link>Formats\Png\Zlib\Crc32.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Png\Zlib\IChecksum.cs">
+      <Link>Formats\Png\Zlib\IChecksum.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Png\Zlib\ZlibInputStream.cs">
+      <Link>Formats\Png\Zlib\ZlibInputStream.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Formats\Png\Zlib\ZlibOutputStream.cs">
+      <Link>Formats\Png\Zlib\ZlibOutputStream.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\IImage.cs">
+      <Link>IImage.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\IImageBase.cs">
+      <Link>IImageBase.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\IImageProcessor.cs">
+      <Link>IImageProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Image.cs">
+      <Link>Image.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\ImageBase.cs">
+      <Link>ImageBase.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\ImageExtensions.cs">
+      <Link>ImageExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\ImageFrame.cs">
+      <Link>ImageFrame.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\ImageProperty.cs">
+      <Link>ImageProperty.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Numerics\Ellipse.cs">
+      <Link>Numerics\Ellipse.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Numerics\Point.cs">
+      <Link>Numerics\Point.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Numerics\Rectangle.cs">
+      <Link>Numerics\Rectangle.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Numerics\Size.cs">
+      <Link>Numerics\Size.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\ParallelImageProcessor.cs">
+      <Link>ParallelImageProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Samplers\Crop.cs">
+      <Link>Samplers\Crop.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Samplers\EntropyCrop.cs">
+      <Link>Samplers\EntropyCrop.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Samplers\FlipType.cs">
+      <Link>Samplers\FlipType.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Samplers\ImageSampleExtensions.cs">
+      <Link>Samplers\ImageSampleExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Samplers\Resampler.cs">
+      <Link>Samplers\Resampler.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Samplers\Resamplers\BicubicResampler.cs">
+      <Link>Samplers\Resamplers\BicubicResampler.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Samplers\Resamplers\BoxResampler.cs">
+      <Link>Samplers\Resamplers\BoxResampler.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Samplers\Resamplers\CatmullRomResampler.cs">
+      <Link>Samplers\Resamplers\CatmullRomResampler.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Samplers\Resamplers\HermiteResampler.cs">
+      <Link>Samplers\Resamplers\HermiteResampler.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Samplers\Resamplers\IResampler.cs">
+      <Link>Samplers\Resamplers\IResampler.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Samplers\Resamplers\Lanczos3Resampler.cs">
+      <Link>Samplers\Resamplers\Lanczos3Resampler.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Samplers\Resamplers\Lanczos5Resampler.cs">
+      <Link>Samplers\Resamplers\Lanczos5Resampler.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Samplers\Resamplers\Lanczos8Resampler.cs">
+      <Link>Samplers\Resamplers\Lanczos8Resampler.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Samplers\Resamplers\MitchellNetravaliResampler.cs">
+      <Link>Samplers\Resamplers\MitchellNetravaliResampler.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Samplers\Resamplers\NearestNeighborResampler.cs">
+      <Link>Samplers\Resamplers\NearestNeighborResampler.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Samplers\Resamplers\RobidouxResampler.cs">
+      <Link>Samplers\Resamplers\RobidouxResampler.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Samplers\Resamplers\RobidouxSharpResampler.cs">
+      <Link>Samplers\Resamplers\RobidouxSharpResampler.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Samplers\Resamplers\RobidouxSoftResampler.cs">
+      <Link>Samplers\Resamplers\RobidouxSoftResampler.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Samplers\Resamplers\SplineResampler.cs">
+      <Link>Samplers\Resamplers\SplineResampler.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Samplers\Resamplers\TriangleResampler.cs">
+      <Link>Samplers\Resamplers\TriangleResampler.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Samplers\Resamplers\WelchResampler.cs">
+      <Link>Samplers\Resamplers\WelchResampler.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Samplers\Resize.cs">
+      <Link>Samplers\Resize.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Samplers\Rotate.cs">
+      <Link>Samplers\Rotate.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Samplers\RotateFlip.cs">
+      <Link>Samplers\RotateFlip.cs</Link>
+    </Compile>
+    <Compile Include="..\ImageProcessor\Samplers\RotateType.cs">
+      <Link>Samplers\RotateType.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
